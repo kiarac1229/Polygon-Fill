@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flood Fill</title>
+<script>
+    /*
+     * Name:  Kiara Correa Acosta
+     * Date: September 21, 2020 
+     */
+
+    /*
+    Recursion analysis: 
+    After testing a range of numbers in order to get the stack overflow error. I finally came to the number 123 with an error that said: RangeError Maximum call stack size exceeded. 
+    
+    In terms of browsers I found that Safari actually took more time to load the full graphic than Chrome. But in Chrome the max stack size ended up being 83 before I got the error once i put in 84. I found that running the color inside of the function ran smoothly. This also allowed for much cleaner code in my opinion. 
+  
+    With the fill color being RGBA you have a more variety of colors because you can change them slightly by numbers. If we are talking about the name that corresponds the the RGBA then I do not think this would matter.
+    */
+
+    var canvas;    // DOM object corresponding to the canvas
+    var graphics;  // 2D graphics context for drawing on the canvas
+
+    // note: change both for a different background color
+    var backgroundColor = "Cyan";
+    var backgroundRGB = [0, 255, 255, 255];
+
+    // return true if color1==color2, an false otherwise
+    // example input: color1 = [0,255,0,255], pure green
+    function colorEqual(color1, color2) {
+        // TODO
+      if (color1[0] == color2[0] && color1[1] == color2[1] && color1[2] == color2[2] &&color1[3] == color2[3] ) {
+        return true;
+      }
+      else{
+        return false;}
+    }
+
+    // fill a shape, starting at the pixel (x,y)
+    // note: make sure to set "fillStyle" to the desired fill color 
+    // before calling this function
+
+    function floodFill(x, y, backgroundColor) {
+        // TODO
+        var pixColor = graphics.getImageData(x, y, 1, 1).data;
+      
+        if (colorEqual(pixColor,backgroundColor) ){
+          graphics.fillRect(x,y,1,1);
+          floodFill(x+1,y,backgroundColor); // east
+          floodFill(x-1,y,backgroundColor); // west
+          floodFill(x,y+1,backgroundColor); // south
+          floodFill(x,y-1,backgroundColor); // north
+        }
+    }
+
+    function regularPolygon(n, cx, cy, r, lineColor, fillColor) {
+        graphics.strokeStyle = lineColor;
+        var theta = (Math.PI*2)/n;
+      // this begins our polygon
+        graphics.beginPath();
+        graphics.moveTo(cx+r,cy);
+          for (i=1; i <= n; i++){
+            var x = cx + r * Math.cos(i*theta);
+            var y = cy + r * Math.sin(i*theta);
+            graphics.lineTo(x,y);
+          }
+        // this is what actually draws the polygon
+        graphics.stroke();
+        graphics.fillStyle = fillColor;
+        floodFill(cx,cy,backgroundRGB); 
+    }
+
+    function draw() {
+        // make sure to color the background first, since it doesn't have a default color
+       graphics.fillStyle = backgroundColor;      
+       graphics.fillRect(0,0,canvas.width,canvas.height);
+
+        // TODO: call your regular polygon function, then fill it from the center
+        // eyes
+        regularPolygon(30,220,130,10,"black", "black");
+        regularPolygon(30,220,130,3,"yellow", "black");
+        regularPolygon(30,265,130,10,"black", "black");
+        regularPolygon(30,265,130,3,"yellow", "black");
+
+        // mouth
+        regularPolygon(7,245,170,15,"DarkOrchid", "DarkOrchid");
+        regularPolygon(2,245,170,15,"black", "black");
+
+        //left arm
+        regularPolygon(5,90,130,7,"Tomato","Tomato");
+        regularPolygon(5,110,140,7,"Tomato","Tomato"); 
+        regularPolygon(5,135,145,7,"Tomato","Tomato");
+        regularPolygon(5,160,145,7,"Tomato", "Tomato");
+
+        //right arm
+        regularPolygon(5,330,150,7,"Tomato","Tomato");
+        regularPolygon(5,355,155,7,"Tomato","Tomato"); 
+        regularPolygon(5,375,165,7,"Tomato","Tomato");
+        regularPolygon(5,395,180,7,"Tomato", "Tomato");
+
+        //body
+        regularPolygon(6,245,150,70,"purple", "purple");
+
+        // top circles
+        regularPolygon(40,205,70,10,"red", "DeepPink");
+        regularPolygon(40,230,70,10,"red", "DeepPink");
+        regularPolygon(40,255,70,10,"red", "DeepPink");
+        regularPolygon(40,280,70,10,"red", "DeepPink");
+
+        //wings
+        regularPolygon(8,170,100,30,"green", "Chartreuse");
+        regularPolygon(8,170,100,20,"black", "Chartreuse");
+        regularPolygon(8,170,100,10,"green", "Chartreuse");
+
+        regularPolygon(8,320,100,30,"green", "Chartreuse");
+        regularPolygon(8,320,100,20,"black", "Chartreuse");
+        regularPolygon(8,320,100,10,"green", "Chartreuse");
+
+        regularPolygon(8,170,195,30,"green", "Chartreuse");
+        regularPolygon(8,320,195,30,"green", "Chartreuse");
+
+        // bottom circles
+        regularPolygon(40,205,230,10,"pink", "DeepPink");
+        regularPolygon(40,230,230,10,"pink", "DeepPink");
+        regularPolygon(40,255,230,10,"pink", "DeepPink");
+        regularPolygon(40,280,230,10,"pink", "DeepPink");
+    }
+
+    function init() {
+        canvas = document.getElementById("theCanvas");
+        graphics = canvas.getContext("2d");
+        draw();  // draw something on the canvas
+    }
+</script>
+
+</head>
+<body onload="init()">
+    <canvas id="theCanvas" width="450" height="290"></canvas>
+</body>
+</html>
